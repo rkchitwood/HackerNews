@@ -19,13 +19,13 @@ async function getAndShowStoriesOnStart() {
  * Returns the markup for the story.
  */
 
-function generateStoryMarkup(story) {
+function generateStoryMarkup(story, showDeleteBtn = false) {
   // console.debug("generateStoryMarkup", story);
 
   const hostName = story.getHostName();
 
   const showStar = Boolean(currentUser);
-  const showDeleteBtn = Boolean(currentUser);
+  // const showDeleteBtn = Boolean(currentUser);
 
   return $(`
       <li id="${story.storyId}">
@@ -108,6 +108,7 @@ async function toggleStoryFavorite(evt){
     $tgt.closest("i").toggleClass("fas far");
     await currentUser.addFavorite(story);
     }
+    saveFavorites();
 }
 $storiesLists.on("click", ".star", toggleStoryFavorite);
 
@@ -126,8 +127,27 @@ async function deleteStoryUI(evt){
   const $closestLi = $(evt.target).closest("li");
   const storyId = $closestLi.attr("id");
   await storyList.deleteStory(currentUser, storyId);
+  hidePageComponents()
   await getAndShowStoriesOnStart();
   
   
 }
 $storiesLists.on("click", ".trash-can", deleteStoryUI);
+
+function putUserStoriesOnPage() {
+  console.debug("putUserStoriesOnPage");
+
+  $ownStories.empty();
+
+  if (currentUser.ownStories.length === 0) {
+    $ownStories.append("<h5>No stories added by user yet!</h5>");
+  } else {
+    // loop through all of users stories and generate HTML for them
+    for (let story of currentUser.ownStories) {
+      let $story = generateStoryMarkup(story, true);
+      $ownStories.append($story);
+    }
+  }
+
+  $ownStories.show();
+}

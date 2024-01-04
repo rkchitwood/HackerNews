@@ -41,4 +41,12 @@ function navSubmitClick(evt){
   $submitForm.show();
 }
 
+function navMyStories(evt) {
+  console.debug("navMyStories", evt);
+  hidePageComponents();
+  putUserStoriesOnPage();
+  $ownStories.show();
+}
+$body.on("click", "#nav-my-stories", navMyStories);
+
 $navSubmit.on("click", navSubmitClick);

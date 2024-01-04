@@ -9,6 +9,7 @@ const $allStoriesList = $("#all-stories-list");
 const $storyContainer = $(".stories-container.container")
 const $loginForm = $("#login-form");
 const $signupForm = $("#signup-form");
+const $ownStories = $("#my-stories")
 
 const $submitForm = $("#submit-form");
 
@@ -31,7 +32,8 @@ function hidePageComponents() {
     $allStoriesList,
     $loginForm,
     $signupForm,
-    $favoritesList
+    $favoritesList,
+    $ownStories
   ];
   components.forEach(c => c.hide());
 }
@@ -46,7 +48,10 @@ async function start() {
   await getAndShowStoriesOnStart();
 
   // if we got a logged-in user
-  if (currentUser) updateUIOnUserLogin();
+  if (currentUser){
+    updateUIOnUserLogin();
+    loadFavorites();
+  } 
 }
 
 // Once the DOM is entirely loaded, begin the app

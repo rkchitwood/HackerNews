@@ -94,7 +94,13 @@ class StoryList {
       method: 'DELETE',
       url: `https://hack-or-snooze-v3.herokuapp.com/stories/${storyId}`,
       data: { token }
-    })
+    });
+    //filter out the story we are removing
+    this.stories = this.stories.filter(story => story.storyId !== storyId);
+    //filter out the story from ownStories and user's favorites
+    user.ownStories = user.ownStories.filter(s => s.storyId !== storyId);
+    user.favorites = user.favorites.filter(s => s.storyId !== storyId);
+
   }
 }
 
@@ -234,5 +240,14 @@ class User {
 }
   isFavorite(story){
     return this.favorites.some((s) => (s.storyId === story.storyId));
+}
+  saveFavorites(){
+    localStorage.setItem("favorites", JSON.stringify(this.favorites));
+}
+  loadFavorites(){
+    const favoritesJSON = localStorage.getItem("favorites");
+    if(favoritesJSON){
+      this.favorites = JSON.parse(favoritesJSON).map(fav => new Story(fav));
+  }
 }
 }
